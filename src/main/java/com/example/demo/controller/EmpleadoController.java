@@ -69,13 +69,20 @@ public class EmpleadoController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
 			empleadoService.deleteEmpleado(empleado.getEmpleadoId());
-			Empleado firstEmpleado = empleadoService.findAll().get(0);
-			ArrayList<Servicio> servicios = servicioService.findByProfesional(empleado.getEmpleadoId());
-			for (Servicio servicio : servicios) {
-				servicio.setProfesional(firstEmpleado.getEmpleadoId());
+			ArrayList<Empleado> empleados = empleadoService.findAll();
+
+			Empleado firstEmpleado = new Empleado();
+			ArrayList<Servicio> resultados = new ArrayList<>();
+			if (empleados.size() > 0) {
+				firstEmpleado = empleados.get(0);
+				ArrayList<Servicio> servicios = servicioService.findByProfesional(empleado.getEmpleadoId());
+				for (Servicio servicio : servicios) {
+					servicio.setProfesional(firstEmpleado.getEmpleadoId());
+				}
+				
+				resultados = servicioService.saveServicios(servicios);
 			}
-			
-			ArrayList<Servicio> resultados = servicioService.saveServicios(servicios);
+
 			return new ResponseEntity<>(new EmpleadoMasServicios(firstEmpleado, resultados), HttpStatus.OK);
 		}
 	}

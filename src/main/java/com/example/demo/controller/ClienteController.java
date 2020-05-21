@@ -38,7 +38,7 @@ public class ClienteController {
 	}
 	
 	@PostMapping("/save_cliente")
-	public ResponseEntity<?> saveClienteYServicios(@RequestBody ClienteMasServicios body) {
+	public ResponseEntity<ClienteMasServicios> saveClienteYServicios(@RequestBody ClienteMasServicios body) {
 		Cliente cliente = clienteService.save(body.getCliente());
 		ArrayList<Servicio> servicios = body.getServicios();
 		

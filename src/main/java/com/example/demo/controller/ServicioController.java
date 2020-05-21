@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Commons.Constants;
+import com.example.demo.Models.Notification;
 import com.example.demo.Models.Servicio;
+import com.example.demo.services.INotificationService;
 import com.example.demo.services.IServicioService;
 
 @RestController
@@ -23,6 +26,9 @@ public class ServicioController {
 	
 	@Autowired
 	private IServicioService servicioService;
+	
+	@Autowired
+	private INotificationService notificationService;
 	
 	@GetMapping("/get_servicios")
 	public ResponseEntity<ArrayList<Servicio>> getServicios() {
@@ -33,6 +39,14 @@ public class ServicioController {
 	@PostMapping("/save_servicio")
 	public ResponseEntity<Servicio> saveServicio(@RequestBody Servicio servicio) {
 		Servicio resultado = servicioService.saveServicio(servicio);
+		
+		ArrayList<Notification> notifications = notificationService.findNotificationsByType(Constants.cadenciaNotificationType);
+		for (Notification notification: notifications) {
+			if (notification.getClientId().contains(servicio.getClientId())) {
+				notificationService.deleteNotificationById(notification.getNotificationId());
+			}
+		}
+		
 		return new ResponseEntity<>(resultado, HttpStatus.CREATED);
 	}
 	

@@ -13,11 +13,14 @@ import javax.persistence.Table;
 public class TipoServicio implements Serializable {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long servicioId;
 	
     private String nombre;
-
+    
+    public TipoServicio() {
+    	
+    }
 
 	public Long getServicioId() {
 		return servicioId;
