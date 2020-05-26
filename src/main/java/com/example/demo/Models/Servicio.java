@@ -2,8 +2,6 @@ package com.example.demo.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,18 +14,14 @@ public class Servicio implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "service_id")
     private Long serviceId;
-	
-	@Column(name = "client_id")
     private Long clientId;
-    private String nombre;
-    private String apellidos;
     private Long fecha;
-    private Long profesional;
+    private Long empleadoId;
     private ArrayList <Long> servicios = new ArrayList<>();
     private String observacion;
     private double precio;
+    private Long comercioId;
     
     public Servicio() {
     	
@@ -49,22 +43,6 @@ public class Servicio implements Serializable {
 		this.clientId = clientId;
 	}
 
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public String getApellidos() {
-		return apellidos;
-	}
-
-	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
-	}
-
 	public Long getFecha() {
 		return fecha;
 	}
@@ -73,12 +51,12 @@ public class Servicio implements Serializable {
 		this.fecha = fecha;
 	}
 
-	public Long getProfesional() {
-		return profesional;
+	public Long getEmpleadoId() {
+		return empleadoId;
 	}
 
-	public void setProfesional(Long profesional) {
-		this.profesional = profesional;
+	public void setEmpleadoId(Long empleadoId) {
+		this.empleadoId = empleadoId;
 	}
 
 	public ArrayList<Long> getServicios() {
@@ -105,5 +83,13 @@ public class Servicio implements Serializable {
 		this.precio = precio;
 	}
     
+	public Long getComercioId() {
+		return comercioId;
+	}
+
+	public void setComercioId(Long comercioId) {
+		this.comercioId = comercioId;
+	}
+
 	private static final long serialVersionUID = 1L;
 }

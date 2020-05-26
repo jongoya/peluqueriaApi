@@ -15,23 +15,17 @@ public class Empleado implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "empleado_id")
     private Long empleadoId;
-	
     private String nombre;
     private String apellidos;
     private Long fecha;
     private String telefono;
     private String email;
-    
-    @Column(name = "red_color_value")
-    private Long redColorValue;
-    
-    @Column(name = "green_color_value")
-    private Long greenColorValue;
-    
-    @Column(name = "blue_color_value")
-    private Long blueColorValue;
+    private Long red_color_value;
+    private Long green_color_value;
+    private Long blue_color_value;
+    private Long comercioId;
+    private Long is_empleado_jefe;
     
     public Empleado() {
     	
@@ -86,28 +80,46 @@ public class Empleado implements Serializable {
 	}
 
 	public Long getRedColorValue() {
-		return redColorValue;
+		return red_color_value;
 	}
 
 	public void setRedColorValue(Long redColorValue) {
-		this.redColorValue = redColorValue;
+		this.red_color_value = redColorValue;
 	}
 
 	public Long getGreenColorValue() {
-		return greenColorValue;
+		return green_color_value;
 	}
 
 	public void setGreenColorValue(Long greenColorValue) {
-		this.greenColorValue = greenColorValue;
+		this.green_color_value = greenColorValue;
 	}
 
 	public Long getBlueColorValue() {
-		return blueColorValue;
+		return blue_color_value;
 	}
 
 	public void setBlueColorValue(Long blueColorValue) {
-		this.blueColorValue = blueColorValue;
+		this.blue_color_value = blueColorValue;
 	}
     
+	public Long getComercioId() {
+		return comercioId;
+	}
+
+	public void setComercioId(Long comercioId) {
+		this.comercioId = comercioId;
+	}
+
+	public Long getIs_empleado_jefe() {
+		return is_empleado_jefe;
+	}
+
+	public void setIs_empleado_jefe(Long is_empleado_jefe) {
+		this.is_empleado_jefe = is_empleado_jefe;
+	}
+
+
+
 	private static final long serialVersionUID = 1L;
 }

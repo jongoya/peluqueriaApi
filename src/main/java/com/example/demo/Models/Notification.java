@@ -1,16 +1,12 @@
-	package com.example.demo.Models;
+package com.example.demo.Models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "notification")
@@ -18,16 +14,13 @@ public class Notification implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "notification_id")
     private Long notificationId;
-	
-	@Column(name= "client_id")
-    private ArrayList<Long> clientId = new ArrayList<>();
-	
+    private Long clientId;
     private Long fecha;
     private boolean leido;
     private String type;
     private String descripcion;
+    private Long comercioId;
     
     public Notification() {
     	
@@ -41,11 +34,11 @@ public class Notification implements Serializable {
 		this.notificationId = notificationId;
 	}
 
-	public ArrayList<Long> getClientId() {
+	public Long getClientId() {
 		return clientId;
 	}
 
-	public void setClientId(ArrayList<Long> clientId) {
+	public void setClientId(Long clientId) {
 		this.clientId = clientId;
 	}
 
@@ -81,5 +74,13 @@ public class Notification implements Serializable {
 		this.type = type;
 	}
     
+	public Long getComercioId() {
+		return comercioId;
+	}
+
+	public void setComercioId(Long comercioId) {
+		this.comercioId = comercioId;
+	}
+
 	private static final long serialVersionUID = 1L;
 }

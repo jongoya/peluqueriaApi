@@ -12,7 +12,6 @@ public class ServicesUtils {
 		serverCliente.setDireccion(newCliente.getDireccion());
 		serverCliente.setCadenciaVisita(newCliente.getCadenciaVisita());
 		serverCliente.setImagen(newCliente.getImagen());
-		serverCliente.setNotificacionPersonalizada(newCliente.getNotificacionPersonalizada());
 		serverCliente.setObservaciones(newCliente.getObservaciones());
 		serverCliente.setTelefono(newCliente.getTelefono());
 		

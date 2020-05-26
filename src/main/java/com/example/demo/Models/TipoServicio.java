@@ -15,8 +15,8 @@ public class TipoServicio implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long servicioId;
-	
     private String nombre;
+    private Long comercioId;
     
     public TipoServicio() {
     	
@@ -26,21 +26,25 @@ public class TipoServicio implements Serializable {
 		return servicioId;
 	}
 
-
 	public void setServicioId(Long servicioId) {
 		this.servicioId = servicioId;
 	}
-
 
 	public String getNombre() {
 		return nombre;
 	}
 
-
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-    
+	
+	public Long getComercioId() {
+		return comercioId;
+	}
+
+	public void setComercioId(Long comercioId) {
+		this.comercioId = comercioId;
+	}
 
 	private static final long serialVersionUID = 1L;
 }

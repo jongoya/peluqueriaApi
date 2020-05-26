@@ -44,8 +44,6 @@ public class ClienteController {
 		
 		for (Servicio servicio: servicios) {
 			servicio.setClientId(cliente.getId());
-			servicio.setNombre(cliente.getNombre());
-			servicio.setApellidos(cliente.getApellidos());
 		}
 		
 		ArrayList<Servicio> resultados = servicioService.saveServicios(servicios);
@@ -78,14 +76,7 @@ public class ClienteController {
 			Cliente resultado = clienteService.updateCliente(clienteServer);
 			ArrayList<Servicio> servicios = servicioService.findByClienteId(cliente.getId());
 			
-			for (Servicio servicio : servicios) {
-				servicio.setNombre(resultado.getNombre());
-				servicio.setApellidos(resultado.getApellidos());
-			}
-			
-			ArrayList<Servicio> resultados = servicioService.saveServicios(servicios);
-			
-			return new ResponseEntity<>(new ClienteMasServicios(clienteServer, resultados), HttpStatus.OK);
+			return new ResponseEntity<>(new ClienteMasServicios(resultado, servicios), HttpStatus.OK);
 		}
 	}
 }

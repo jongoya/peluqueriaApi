@@ -42,7 +42,7 @@ public class ServicioController {
 		
 		ArrayList<Notification> notifications = notificationService.findNotificationsByType(Constants.cadenciaNotificationType);
 		for (Notification notification: notifications) {
-			if (notification.getClientId().contains(servicio.getClientId())) {
+			if (notification.getClientId() == servicio.getClientId()) {
 				notificationService.deleteNotificationById(notification.getNotificationId());
 			}
 		}
@@ -53,6 +53,13 @@ public class ServicioController {
 	@PostMapping("/save_servicios")
 	public ResponseEntity<ArrayList<Servicio>> saveServicios(@RequestBody ArrayList<Servicio> servicios) {
 		ArrayList<Servicio> resultados = servicioService.saveServicios(servicios);
+		
+		ArrayList<Notification> notifications = notificationService.findNotificationsByType(Constants.cadenciaNotificationType);
+		for (Notification notification: notifications) {
+			if (notification.getClientId() == servicios.get(0).getClientId()) {
+				notificationService.deleteNotificationById(notification.getNotificationId());
+			}
+		}
 		return new ResponseEntity<>(resultados, HttpStatus.CREATED);
 	}
 	

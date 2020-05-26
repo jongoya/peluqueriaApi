@@ -15,22 +15,14 @@ public class CierreCaja implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "caja_id")
     private Long cajaId;
-	
     private Long fecha;
-    
-    @Column(name = "numero_servicios")
-    private int numeroServicios;
-    
-    @Column(name = "total_caja")
-    private double totalCaja;
-    
-    @Column(name = "total_productos")
-    private double totalProductos;
-    
+    private int numero_servicios;
+    private double total_caja;
+    private double total_productos;
     private double efectivo;
     private double tarjeta;
+    private Long comercioId;
     
     public CierreCaja() {
     	
@@ -53,27 +45,27 @@ public class CierreCaja implements Serializable {
 	}
 
 	public int getNumeroServicios() {
-		return numeroServicios;
+		return numero_servicios;
 	}
 
 	public void setNumeroServicios(int numeroServicios) {
-		this.numeroServicios = numeroServicios;
+		this.numero_servicios = numeroServicios;
 	}
 
 	public double getTotalCaja() {
-		return totalCaja;
+		return total_caja;
 	}
 
 	public void setTotalCaja(double totalCaja) {
-		this.totalCaja = totalCaja;
+		this.total_caja = totalCaja;
 	}
 
 	public double getTotalProductos() {
-		return totalProductos;
+		return total_productos;
 	}
 
 	public void setTotalProductos(double totalProductos) {
-		this.totalProductos = totalProductos;
+		this.total_productos = totalProductos;
 	}
 
 	public double getEfectivo() {
@@ -92,5 +84,13 @@ public class CierreCaja implements Serializable {
 		this.tarjeta = tarjeta;
 	}
     
+	public Long getComercioId() {
+		return comercioId;
+	}
+
+	public void setComercioId(Long comercioId) {
+		this.comercioId = comercioId;
+	}
+
 	private static final long serialVersionUID = 1L;
 }

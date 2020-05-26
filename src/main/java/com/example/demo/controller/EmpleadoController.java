@@ -77,7 +77,7 @@ public class EmpleadoController {
 				firstEmpleado = empleados.get(0);
 				ArrayList<Servicio> servicios = servicioService.findByProfesional(empleado.getEmpleadoId());
 				for (Servicio servicio : servicios) {
-					servicio.setProfesional(firstEmpleado.getEmpleadoId());
+					servicio.setEmpleadoId(firstEmpleado.getEmpleadoId());
 				}
 				
 				resultados = servicioService.saveServicios(servicios);

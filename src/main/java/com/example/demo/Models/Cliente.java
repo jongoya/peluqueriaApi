@@ -28,12 +28,8 @@ public class Cliente implements Serializable {
 	private String direccion;
 	private String imagen;
 	private String observaciones;
-	
-	@Column(name = "cadencia_visita")
-	private String cadenciaVisita;
-	
-	@Column(name = "notificacion_personalizada")
-	private Long notificacionPersonalizada;
+	private String cadencia_visita;
+	private Long comercioId;
 	
 	public Cliente() {
 		
@@ -96,11 +92,11 @@ public class Cliente implements Serializable {
 	}
 
 	public String getCadenciaVisita() {
-		return cadenciaVisita;
+		return cadencia_visita;
 	}
 
 	public void setCadenciaVisita(String cadenciaVisita) {
-		this.cadenciaVisita = cadenciaVisita;
+		this.cadencia_visita = cadenciaVisita;
 	}
 
 	public String getObservaciones() {
@@ -111,20 +107,20 @@ public class Cliente implements Serializable {
 		this.observaciones = observaciones;
 	}
 
-	public Long getNotificacionPersonalizada() {
-		return notificacionPersonalizada;
-	}
-
-	public void setNotificacionPersonalizada(Long notificacionPersonalizada) {
-		this.notificacionPersonalizada = notificacionPersonalizada;
-	}
-
 	public String getImagen() {
 		return imagen;
 	}
 
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
+	}
+	
+	public Long getComercioId() {
+		return comercioId;
+	}
+
+	public void setComercioId(Long comercioId) {
+		this.comercioId = comercioId;
 	}
 
 	private static final long serialVersionUID = 1L;
