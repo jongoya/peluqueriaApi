@@ -63,7 +63,7 @@ public class EmpleadoController {
 		}
 	}
 	
-	@DeleteMapping("/delete_empleado")
+	@PostMapping("/delete_empleado")
 	public ResponseEntity<?> deleteEmpleado(@RequestBody Empleado empleado) {
 		if (empleadoService.findByEmpleadoId(empleado.getEmpleadoId()) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -58,7 +58,7 @@ public class NotificationController {
 		return new ResponseEntity<>(resultado, HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/delete_notification")
+	@PostMapping("/delete_notification")
 	public ResponseEntity<Notification> deleteNotification(@RequestBody Notification notification) {
 		if (notificationService.findNotificationById(notification.getNotificationId()) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -68,7 +68,7 @@ public class NotificationController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/delete_notifications")
+	@PostMapping("/delete_notifications")
 	public ResponseEntity<Notification> deleteNotifications(@RequestBody ArrayList<Notification> notifications) {
 		notificationService.deleteNotifications(notifications);
 		return new ResponseEntity<>(HttpStatus.OK);

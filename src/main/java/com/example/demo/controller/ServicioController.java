@@ -93,7 +93,7 @@ public class ServicioController {
 		}
 	}
 	
-	@DeleteMapping("/delete_servicio")
+	@PostMapping("/delete_servicio")
 	public ResponseEntity<Void> deleteServicio(@RequestBody Servicio servicio) {
 		if (servicioService.findByServicioId(servicio.getServiceId()) != null) {
 			servicioService.deleteServicio(servicio.getServiceId());
