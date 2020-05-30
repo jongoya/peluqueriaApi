@@ -58,6 +58,18 @@ public class NotificationController {
 		return new ResponseEntity<>(resultado, HttpStatus.OK);
 	}
 	
+	@PutMapping("/update_notifications")
+	public ResponseEntity<ArrayList<Notification>> updateNotifications(@RequestBody ArrayList<Notification> notifications) {
+		for (Notification notification : notifications) {
+			if (notificationService.findNotificationById(notification.getNotificationId()) == null) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		}
+		
+		ArrayList<Notification> notificaciones = notificationService.updateNotifications(notifications);
+		return new ResponseEntity<>(notificaciones, HttpStatus.OK);
+	}
+	
 	@PostMapping("/delete_notification")
 	public ResponseEntity<Notification> deleteNotification(@RequestBody Notification notification) {
 		if (notificationService.findNotificationById(notification.getNotificationId()) == null) {

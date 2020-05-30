@@ -25,7 +25,7 @@ public class Empleado implements Serializable {
     private Long green_color_value;
     private Long blue_color_value;
     private Long comercioId;
-    private Long is_empleado_jefe;
+    private boolean is_empleado_jefe;
     
     public Empleado() {
     	
@@ -111,11 +111,11 @@ public class Empleado implements Serializable {
 		this.comercioId = comercioId;
 	}
 
-	public Long getIs_empleado_jefe() {
+	public boolean getIs_empleado_jefe() {
 		return is_empleado_jefe;
 	}
 
-	public void setIs_empleado_jefe(Long is_empleado_jefe) {
+	public void setIs_empleado_jefe(boolean is_empleado_jefe) {
 		this.is_empleado_jefe = is_empleado_jefe;
 	}
 

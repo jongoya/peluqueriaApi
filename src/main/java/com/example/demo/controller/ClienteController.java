@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Commons.Constants;
 import com.example.demo.Models.Cliente;
 import com.example.demo.Models.ClienteMasServicios;
+import com.example.demo.Models.Notification;
 import com.example.demo.Models.Servicio;
 import com.example.demo.services.IClienteService;
+import com.example.demo.services.INotificationService;
 import com.example.demo.services.IServicioService;
-import com.example.demo.services.Utils.ServicesUtils;
 
 @RestController
 @RequestMapping("/api")
@@ -30,6 +32,7 @@ public class ClienteController {
 	private IClienteService clienteService;
 	@Autowired
 	private IServicioService servicioService;
+	@Autowired INotificationService notificacionService;
 	
 	@GetMapping("/get_clientes")
 	@ResponseStatus(HttpStatus.OK)
@@ -68,15 +71,37 @@ public class ClienteController {
 	
 	@PutMapping("/update_cliente")
 	public ResponseEntity<?> updateCliente(@RequestBody Cliente cliente) {
-		Cliente clienteServer = clienteService.findByClienteId(cliente.getId());
-		if (clienteServer == null) {
+		if (clienteService.findByClienteId(cliente.getId()) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
-			clienteServer = ServicesUtils.updateCliente(cliente, clienteServer);
-			Cliente resultado = clienteService.updateCliente(clienteServer);
+			Cliente resultado = clienteService.updateCliente(cliente);
 			ArrayList<Servicio> servicios = servicioService.findByClienteId(cliente.getId());
 			
 			return new ResponseEntity<>(new ClienteMasServicios(resultado, servicios), HttpStatus.OK);
 		}
+	}
+	
+	@PutMapping("update_notificacion_personalizada")
+	public ResponseEntity<?> updateNotificacionPersonalizada(@RequestBody Cliente cliente) {
+		Cliente serverCliente = clienteService.findByClienteId(cliente.getId());
+		if (serverCliente != null) {
+			serverCliente.setFechaNotificacionPersonalizada(cliente.getFechaNotificacionPersonalizada());
+			Cliente resultado = clienteService.updateCliente(serverCliente);
+			if (cliente.getFechaNotificacionPersonalizada() == 0) {
+				ArrayList<Notification> notifications = notificacionService.findNotificationsByType(Constants.personalizadaNotificationType);
+				ArrayList<Notification> notificacionesAEliminar = new ArrayList<>();
+				for (Notification notificacion : notifications) {
+					if (notificacion.getClientId() == cliente.getId()) {
+						notificacionesAEliminar.add(notificacion);
+					}
+				}
+				
+				notificacionService.deleteNotifications(notificacionesAEliminar);
+			}
+			
+			return new ResponseEntity<>(resultado, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 }

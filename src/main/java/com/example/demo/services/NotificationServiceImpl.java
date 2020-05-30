@@ -53,4 +53,9 @@ public class NotificationServiceImpl implements INotificationService {
 	public void deleteNotifications(ArrayList<Notification> notifications) {
 		notificationDao.deleteAll(notifications);
 	}
+
+	@Override
+	public ArrayList<Notification> updateNotifications(ArrayList<Notification> notifications) {
+		return (ArrayList<Notification>) notificationDao.saveAll(notifications);
+	}
 }

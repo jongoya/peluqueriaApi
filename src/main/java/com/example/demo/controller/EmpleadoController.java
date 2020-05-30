@@ -71,19 +71,29 @@ public class EmpleadoController {
 			empleadoService.deleteEmpleado(empleado.getEmpleadoId());
 			ArrayList<Empleado> empleados = empleadoService.findAll();
 
-			Empleado firstEmpleado = new Empleado();
+			Empleado empleadoJefe = new Empleado();
 			ArrayList<Servicio> resultados = new ArrayList<>();
 			if (empleados.size() > 0) {
-				firstEmpleado = empleados.get(0);
+				empleadoJefe = getEmpleadoJefe(empleados);
 				ArrayList<Servicio> servicios = servicioService.findByProfesional(empleado.getEmpleadoId());
 				for (Servicio servicio : servicios) {
-					servicio.setEmpleadoId(firstEmpleado.getEmpleadoId());
+					servicio.setEmpleadoId(empleadoJefe.getEmpleadoId());
 				}
 				
 				resultados = servicioService.saveServicios(servicios);
 			}
 
-			return new ResponseEntity<>(new EmpleadoMasServicios(firstEmpleado, resultados), HttpStatus.OK);
+			return new ResponseEntity<>(new EmpleadoMasServicios(empleadoJefe, resultados), HttpStatus.OK);
 		}
+	}
+	
+	private Empleado getEmpleadoJefe(ArrayList<Empleado> empleados) {
+		for (Empleado empleado : empleados) {
+			if (empleado.getIs_empleado_jefe()) {
+				return empleado;
+			}
+		}
+		
+		return empleados.get(0);
 	}
 }

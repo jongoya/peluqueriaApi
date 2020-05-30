@@ -30,6 +30,7 @@ public class Cliente implements Serializable {
 	private String observaciones;
 	private String cadencia_visita;
 	private Long comercioId;
+	private Long fechaNotificacionPersonalizada;
 	
 	public Cliente() {
 		
@@ -122,6 +123,16 @@ public class Cliente implements Serializable {
 	public void setComercioId(Long comercioId) {
 		this.comercioId = comercioId;
 	}
+
+	public Long getFechaNotificacionPersonalizada() {
+		return fechaNotificacionPersonalizada;
+	}
+
+	public void setFechaNotificacionPersonalizada(Long fechaNotificacionPersonalizada) {
+		this.fechaNotificacionPersonalizada = fechaNotificacionPersonalizada;
+	}
+
+
 
 	private static final long serialVersionUID = 1L;
 }
