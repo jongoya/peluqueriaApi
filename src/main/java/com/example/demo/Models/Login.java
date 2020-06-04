@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "login")
@@ -21,6 +22,10 @@ public class Login implements Serializable {
 	private String password;
 	private String token;
 	private int numero_dispositivos;
+	private boolean active;
+	
+	@Transient
+	private String nombre_dispositivo;
 	
 	public Login() {
 		
@@ -72,5 +77,21 @@ public class Login implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre_comercio = nombre;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getNombre_dispositivo() {
+		return nombre_dispositivo;
+	}
+
+	public void setNombre_dispositivo(String nombre_dispositivo) {
+		this.nombre_dispositivo = nombre_dispositivo;
 	}
 }

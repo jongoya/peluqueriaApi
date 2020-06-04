@@ -24,6 +24,13 @@ public class Dispositivo implements Serializable {
 		
 	}
 	
+	public Dispositivo(Long comercioId, Long fecha, String nombre_dispositivo) {
+		super();
+		this.comercioId = comercioId;
+		this.fecha = fecha;
+		this.nombre_dispositivo = nombre_dispositivo;
+	}
+
 	public Long getDispositivoId() {
 		return dispositivoId;
 	}
