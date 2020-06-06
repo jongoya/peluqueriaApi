@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "cliente")
@@ -31,6 +32,9 @@ public class Cliente implements Serializable {
 	private String cadencia_visita;
 	private Long comercioId;
 	private Long fechaNotificacionPersonalizada;
+	
+	@Transient
+	private String unique_deviceId;
 	
 	public Cliente() {
 		
@@ -132,7 +136,13 @@ public class Cliente implements Serializable {
 		this.fechaNotificacionPersonalizada = fechaNotificacionPersonalizada;
 	}
 
+	public String getUnique_deviceId() {
+		return unique_deviceId;
+	}
 
+	public void setUnique_deviceId(String unique_deviceId) {
+		this.unique_deviceId = unique_deviceId;
+	}
 
 	private static final long serialVersionUID = 1L;
 }

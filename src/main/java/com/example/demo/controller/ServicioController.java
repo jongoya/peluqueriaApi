@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Commons.CommonFunctions;
 import com.example.demo.Commons.Constants;
 import com.example.demo.Models.Notification;
 import com.example.demo.Models.Servicio;
+import com.example.demo.services.IDispositivoService;
 import com.example.demo.services.INotificationService;
 import com.example.demo.services.IServicioService;
 
@@ -29,15 +32,25 @@ public class ServicioController {
 	
 	@Autowired
 	private INotificationService notificationService;
+	@Autowired
+	private IDispositivoService dispositivoService;
 	
 	@GetMapping("/get_servicios")
-	public ResponseEntity<ArrayList<Servicio>> getServicios() {
+	public ResponseEntity<ArrayList<Servicio>> getServicios(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		ArrayList<Servicio> servicios = servicioService.findAll();
 		return new ResponseEntity<>(servicios, HttpStatus.OK);
 	}
 	
 	@PostMapping("/save_servicio")
-	public ResponseEntity<Servicio> saveServicio(@RequestBody Servicio servicio) {
+	public ResponseEntity<Servicio> saveServicio(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Servicio servicio) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		Servicio resultado = servicioService.saveServicio(servicio);
 		
 		ArrayList<Notification> notifications = notificationService.findNotificationsByType(Constants.cadenciaNotificationType);
@@ -51,7 +64,11 @@ public class ServicioController {
 	}
 	
 	@PostMapping("/save_servicios")
-	public ResponseEntity<ArrayList<Servicio>> saveServicios(@RequestBody ArrayList<Servicio> servicios) {
+	public ResponseEntity<ArrayList<Servicio>> saveServicios(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<Servicio> servicios) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		ArrayList<Servicio> resultados = servicioService.saveServicios(servicios);
 		
 		ArrayList<Notification> notifications = notificationService.findNotificationsByType(Constants.cadenciaNotificationType);
@@ -64,7 +81,11 @@ public class ServicioController {
 	}
 	
 	@GetMapping("/get_servicio/{id}")
-	public ResponseEntity<?> getServicioByServicioId(@PathVariable(value = "id")Long id) {
+	public ResponseEntity<?> getServicioByServicioId(@PathVariable(value = "id")Long id, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		Servicio servicio = servicioService.findByServicioId(id); 
 		if (servicio == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -74,7 +95,11 @@ public class ServicioController {
 	}
 	
 	@GetMapping("/get_servicios_client/{id}")
-	public ResponseEntity<?> getServiciosByClientId(@PathVariable(value = "id")Long id) {
+	public ResponseEntity<?> getServiciosByClientId(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @PathVariable(value = "id")Long id) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		ArrayList<Servicio> servicios = servicioService.findByClienteId(id);
 		if (servicios.size() == 0) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -84,7 +109,11 @@ public class ServicioController {
 	}
 	
 	@PutMapping("/update_servicio")
-	public ResponseEntity<?> updateServicio(@RequestBody Servicio servicio) {
+	public ResponseEntity<?> updateServicio(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Servicio servicio) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		if (servicioService.findByServicioId(servicio.getServiceId()) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
@@ -94,7 +123,11 @@ public class ServicioController {
 	}
 	
 	@PostMapping("/delete_servicio")
-	public ResponseEntity<Void> deleteServicio(@RequestBody Servicio servicio) {
+	public ResponseEntity<Void> deleteServicio(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Servicio servicio) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		if (servicioService.findByServicioId(servicio.getServiceId()) != null) {
 			servicioService.deleteServicio(servicio.getServiceId());
 			return new ResponseEntity<>(HttpStatus.OK);

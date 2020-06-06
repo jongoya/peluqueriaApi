@@ -27,6 +27,9 @@ public class Login implements Serializable {
 	@Transient
 	private String nombre_dispositivo;
 	
+	@Transient
+	private String unique_deviceId;
+	
 	public Login() {
 		
 	}
@@ -94,4 +97,13 @@ public class Login implements Serializable {
 	public void setNombre_dispositivo(String nombre_dispositivo) {
 		this.nombre_dispositivo = nombre_dispositivo;
 	}
+
+	public String getUnique_deviceId() {
+		return unique_deviceId;
+	}
+
+	public void setUnique_deviceId(String unique_deviceId) {
+		this.unique_deviceId = unique_deviceId;
+	}
+	
 }

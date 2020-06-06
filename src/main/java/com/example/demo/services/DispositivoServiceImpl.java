@@ -28,4 +28,14 @@ public class DispositivoServiceImpl implements IDispositivoService {
 	public ArrayList<Dispositivo> findByComercioId(Long comercioId) {
 		return dispositivoDao.findByComercioId(comercioId);
 	}
+
+	@Override
+	public void deleteDispositivo(Long dispositivoId) {
+		dispositivoDao.deleteById(dispositivoId);
+	}
+
+	@Override
+	public Dispositivo findByUniqueDeviceId(String uniqueDeviceId) {
+		return dispositivoDao.findByUniqueDeviceId(uniqueDeviceId).orElse(null);
+	}
 }

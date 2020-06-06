@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "empleado")
@@ -26,6 +27,9 @@ public class Empleado implements Serializable {
     private Long blue_color_value;
     private Long comercioId;
     private boolean is_empleado_jefe;
+	
+	@Transient
+	private String unique_deviceId;
     
     public Empleado() {
     	
@@ -119,7 +123,13 @@ public class Empleado implements Serializable {
 		this.is_empleado_jefe = is_empleado_jefe;
 	}
 
+	public String getUnique_deviceId() {
+		return unique_deviceId;
+	}
 
+	public void setUnique_deviceId(String unique_deviceId) {
+		this.unique_deviceId = unique_deviceId;
+	}
 
 	private static final long serialVersionUID = 1L;
 }

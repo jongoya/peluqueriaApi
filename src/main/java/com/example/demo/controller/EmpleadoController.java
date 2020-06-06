@@ -11,13 +11,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Commons.CommonFunctions;
+import com.example.demo.Commons.Constants;
 import com.example.demo.Models.ClienteMasServicios;
 import com.example.demo.Models.Empleado;
 import com.example.demo.Models.EmpleadoMasServicios;
 import com.example.demo.Models.Servicio;
+import com.example.demo.services.IDispositivoService;
 import com.example.demo.services.IEmpleadoService;
 import com.example.demo.services.IServicioService;
 
@@ -31,20 +35,31 @@ public class EmpleadoController {
 	@Autowired
 	private IServicioService servicioService;
 	
+	@Autowired
+	private IDispositivoService dispositivoService;
+	
 	@GetMapping("/get_empleados")
-	public ResponseEntity<ArrayList<Empleado>> getEmpleados() {
+	public ResponseEntity<ArrayList<Empleado>> getEmpleados(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		ArrayList<Empleado> empleados = empleadoService.findAll();
 		return new ResponseEntity<>(empleados, HttpStatus.OK);
 	}
 	
 	@PostMapping("/save_empleado")
-	public ResponseEntity<?> saveEmpleado(@RequestBody Empleado empleado) {
+	public ResponseEntity<?> saveEmpleado(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		Empleado resultado = empleadoService.saveEmpleado(empleado);
 		return new ResponseEntity<>(resultado, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/update_empleado")
-	public ResponseEntity<?> updateEmpleado(@RequestBody Empleado empleado) {
+	public ResponseEntity<?> updateEmpleado(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
 		if (empleadoService.findByEmpleadoId(empleado.getEmpleadoId()) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
@@ -54,7 +69,11 @@ public class EmpleadoController {
 	}
 	
 	@GetMapping("get_empleado/{id}")
-	public ResponseEntity<?>getEmpleadoWithId(@PathVariable(value = "id")Long id) {
+	public ResponseEntity<?>getEmpleadoWithId(@PathVariable(value = "id")Long id, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		Empleado empleado = empleadoService.findByEmpleadoId(id);
 		if (empleado == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,7 +83,11 @@ public class EmpleadoController {
 	}
 	
 	@PostMapping("/delete_empleado")
-	public ResponseEntity<?> deleteEmpleado(@RequestBody Empleado empleado) {
+	public ResponseEntity<?> deleteEmpleado(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		if (empleadoService.findByEmpleadoId(empleado.getEmpleadoId()) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {

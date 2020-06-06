@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Models.Dispositivo;
 import com.example.demo.Models.Login;
+import com.example.demo.Models.LoginMasDispositivos;
 import com.example.demo.services.IDispositivoService;
 import com.example.demo.services.ILoginService;
 
@@ -37,7 +38,7 @@ public class LoginController {
 	}
 	
 	@PostMapping("/login_comercio")
-	public ResponseEntity<Login> loginComercio(@RequestBody Login login) {
+	public ResponseEntity<LoginMasDispositivos> loginComercio(@RequestBody Login login) {
 		Login comercioLogin = loginService.findByUsuario(login.getUsuario());
 		
 		if (comercioLogin == null) {
@@ -55,17 +56,19 @@ public class LoginController {
 		boolean dispositivoRegistrado = false;
 		ArrayList<Dispositivo> dispositivos = dispositivoService.findByComercioId(comercioLogin.getComercioId());
 		for (Dispositivo dispositivo : dispositivos) {
-			if (dispositivo.getNombre_dispositivo().compareTo(login.getNombre_dispositivo()) == 0) {
+			if (dispositivo.getUnique_deviceId().compareTo(login.getUnique_deviceId()) == 0) {
 				dispositivoRegistrado = true;
 			}
 		}
 		
+		LoginMasDispositivos result = new LoginMasDispositivos(comercioLogin, dispositivos);
+		
 		if (dispositivos.size() == comercioLogin.getNumero_dispositivos() && !dispositivoRegistrado) {
-			return new ResponseEntity<>(HttpStatus.valueOf(413));
+			return new ResponseEntity<>(result, HttpStatus.valueOf(413));
 		}
 		
 		if (!dispositivoRegistrado) {
-			dispositivoService.save(new Dispositivo(comercioLogin.getComercioId(), new Date().getTime(), login.getNombre_dispositivo()));
+			dispositivoService.save(new Dispositivo(comercioLogin.getComercioId(), new Date().getTime(), login.getNombre_dispositivo(), login.getUnique_deviceId()));
 		}
 		
 		if (!comercioLogin.isActive()) {
@@ -74,7 +77,39 @@ public class LoginController {
 			comercioLogin = loginService.updateLogin(comercioLogin);
 		}
 		
-		return new ResponseEntity<>(comercioLogin, HttpStatus.OK);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping("/login_swap_devices")
+	public ResponseEntity<LoginMasDispositivos> swapDevices(@RequestBody LoginMasDispositivos loginMasDispositivos) {
+		Login comercioLogin = loginService.findByUsuario(loginMasDispositivos.getLogin().getUsuario());
+		
+		if (comercioLogin == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		if (loginMasDispositivos.getDispositivos().size() == 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		String oldUniqueDeviceId = loginMasDispositivos.getDispositivos().get(0).getUnique_deviceId();
+		Dispositivo dispositivoABorrar = null;
+		ArrayList<Dispositivo> dispositivos = dispositivoService.findByComercioId(comercioLogin.getComercioId());
+		for (Dispositivo dispositivo : dispositivos) {
+			if (dispositivo.getUnique_deviceId().compareTo(oldUniqueDeviceId) == 0) {
+				dispositivoABorrar = dispositivo;
+			}
+		}
+		
+		if (dispositivoABorrar == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		dispositivoService.deleteDispositivo(dispositivoABorrar.getDispositivoId());
+		dispositivoService.save(new Dispositivo(comercioLogin.getComercioId(), new Date().getTime(), loginMasDispositivos.getLogin().getNombre_dispositivo(), loginMasDispositivos.getLogin().getUnique_deviceId()));
+
+		LoginMasDispositivos result = new LoginMasDispositivos(comercioLogin, dispositivos);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
 	private String generarToken() {

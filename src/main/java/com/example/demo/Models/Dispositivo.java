@@ -2,6 +2,7 @@ package com.example.demo.Models;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,15 +21,19 @@ public class Dispositivo implements Serializable {
 	private Long fecha;
 	private String nombre_dispositivo;
 	
+	@Column(name = "unique_deviceId")
+	private String uniqueDeviceId;
+	
 	public Dispositivo() {
 		
 	}
 	
-	public Dispositivo(Long comercioId, Long fecha, String nombre_dispositivo) {
+	public Dispositivo(Long comercioId, Long fecha, String nombre_dispositivo, String uniqueDeviceId) {
 		super();
 		this.comercioId = comercioId;
 		this.fecha = fecha;
 		this.nombre_dispositivo = nombre_dispositivo;
+		this.uniqueDeviceId = uniqueDeviceId;
 	}
 
 	public Long getDispositivoId() {
@@ -61,6 +66,14 @@ public class Dispositivo implements Serializable {
 
 	public void setNombre_dispositivo(String nombre_dispositivo) {
 		this.nombre_dispositivo = nombre_dispositivo;
+	}
+
+	public String getUnique_deviceId() {
+		return uniqueDeviceId;
+	}
+
+	public void setUnique_deviceId(String unique_deviceId) {
+		this.uniqueDeviceId = unique_deviceId;
 	}
 
 	private static final long serialVersionUID = 1L;

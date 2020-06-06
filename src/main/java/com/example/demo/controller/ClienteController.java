@@ -11,16 +11,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Commons.CommonFunctions;
 import com.example.demo.Commons.Constants;
 import com.example.demo.Models.Cliente;
 import com.example.demo.Models.ClienteMasServicios;
+import com.example.demo.Models.Dispositivo;
 import com.example.demo.Models.Notification;
 import com.example.demo.Models.Servicio;
 import com.example.demo.services.IClienteService;
+import com.example.demo.services.IDispositivoService;
 import com.example.demo.services.INotificationService;
 import com.example.demo.services.IServicioService;
 
@@ -34,14 +38,24 @@ public class ClienteController {
 	private IServicioService servicioService;
 	@Autowired INotificationService notificacionService;
 	
+	@Autowired
+	private IDispositivoService dispositivoService;
+	
 	@GetMapping("/get_clientes")
-	@ResponseStatus(HttpStatus.OK)
-	public List<Cliente> getClientes() {
-		return clienteService.findAll();
+	public ResponseEntity<ArrayList<Cliente>> getClientes(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		return new ResponseEntity<>(clienteService.findAll(), HttpStatus.OK);
 	}
 	
 	@PostMapping("/save_cliente")
-	public ResponseEntity<ClienteMasServicios> saveClienteYServicios(@RequestBody ClienteMasServicios body) {
+	public ResponseEntity<ClienteMasServicios> saveClienteYServicios(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ClienteMasServicios body) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		Cliente cliente = clienteService.save(body.getCliente());
 		ArrayList<Servicio> servicios = body.getServicios();
 		
@@ -58,7 +72,11 @@ public class ClienteController {
 	
 	
 	@GetMapping("/get_cliente/{id}")
-	public ResponseEntity<?> getCliente(@PathVariable(value = "id")Long id) {
+	public ResponseEntity<?> getCliente(@PathVariable(value = "id")Long id, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		Cliente resultado = clienteService.findByClienteId(id);
 		
 		if (resultado != null) {
@@ -70,7 +88,11 @@ public class ClienteController {
 	}
 	
 	@PutMapping("/update_cliente")
-	public ResponseEntity<?> updateCliente(@RequestBody Cliente cliente) {
+	public ResponseEntity<?> updateCliente(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Cliente cliente) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		if (clienteService.findByClienteId(cliente.getId()) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
@@ -82,7 +104,11 @@ public class ClienteController {
 	}
 	
 	@PutMapping("update_notificacion_personalizada")
-	public ResponseEntity<?> updateNotificacionPersonalizada(@RequestBody Cliente cliente) {
+	public ResponseEntity<?> updateNotificacionPersonalizada(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Cliente cliente) {
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		Cliente serverCliente = clienteService.findByClienteId(cliente.getId());
 		if (serverCliente != null) {
 			serverCliente.setFechaNotificacionPersonalizada(cliente.getFechaNotificacionPersonalizada());
