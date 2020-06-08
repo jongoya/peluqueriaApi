@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Models.Dispositivo;
+import com.example.demo.Models.JwtUser;
 import com.example.demo.Models.Login;
 import com.example.demo.Models.LoginMasDispositivos;
+import com.example.demo.security.JwtGenerator;
 import com.example.demo.services.IDispositivoService;
 import com.example.demo.services.ILoginService;
 
@@ -24,8 +26,14 @@ public class LoginController {
 	@Autowired
 	private ILoginService loginService;
 	
+	private JwtGenerator jwtGenerator;
+	
 	@Autowired IDispositivoService dispositivoService;
 	
+	public LoginController() {
+		this.jwtGenerator = new JwtGenerator();
+	}
+
 	@PostMapping("/register_comercio")
 	public ResponseEntity<Login> registerComercio(@RequestBody Login login) {
 		if (loginService.findByComercioId(login.getComercioId()) != null) {
@@ -73,7 +81,7 @@ public class LoginController {
 		
 		if (!comercioLogin.isActive()) {
 			comercioLogin.setActive(true);
-			comercioLogin.setToken(generarToken());
+			comercioLogin.setToken(generarToken(comercioLogin));
 			comercioLogin = loginService.updateLogin(comercioLogin);
 		}
 		
@@ -112,8 +120,11 @@ public class LoginController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	private String generarToken() {
-		//TODO implementacion del token
-		return "token";
+	private String generarToken(Login login) {
+		JwtUser user = new JwtUser();
+		user.setUsername(login.getNombre());
+		user.setId(login.getComercioId());
+		user.setRole("Admin");
+		return jwtGenerator.generate(user);
 	}
 }

@@ -32,4 +32,9 @@ public class TipoServicioServiceImpl implements ITipoServicioService {
 	public TipoServicio findByTipoServicioId(Long id) {
 		return (TipoServicio) tipoServicioDao.findByServicioId(id).orElse(null);
 	}
+
+	@Override
+	public ArrayList<TipoServicio> findByComercioId(Long comercioId) {
+		return tipoServicioDao.findByComercioId(comercioId);
+	}
 }

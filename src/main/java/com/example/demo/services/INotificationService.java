@@ -14,4 +14,5 @@ public interface INotificationService {
 	public ArrayList<Notification> updateNotifications(ArrayList<Notification> notifications);
 	public void deleteNotificationById(Long notificationId);
 	public void deleteNotifications(ArrayList<Notification> notifications);
+	public ArrayList<Notification> findByComercioId(Long comercioId);
 }

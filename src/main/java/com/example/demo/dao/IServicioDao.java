@@ -1,5 +1,6 @@
 package com.example.demo.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,4 +12,5 @@ public interface IServicioDao extends CrudRepository<Servicio, Long> {
 	public Optional<Servicio> findByServiceId(Long serviceId);
 	public List<Servicio> findByClientId(Long clientId);
 	public List<Servicio> findByEmpleadoId(Long empleadoId);
+	public ArrayList<Servicio> findByComercioId(Long comercioId);
 }

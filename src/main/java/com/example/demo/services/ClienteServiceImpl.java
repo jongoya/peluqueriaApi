@@ -37,4 +37,9 @@ public class ClienteServiceImpl implements IClienteService {
 	public Cliente updateCliente(Cliente cliente) {
 		return (Cliente) clienteDao.save(cliente);
 	}
+
+	@Override
+	public ArrayList<Cliente> findByComercioId(Long comercioId) {
+		return clienteDao.findByComercioId(comercioId);
+	}
 }

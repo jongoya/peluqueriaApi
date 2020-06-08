@@ -10,4 +10,5 @@ public interface IClienteService {
 	public Cliente save(Cliente cliente);
 	public Cliente findByClienteId(Long clienteId);
 	public Cliente updateCliente(Cliente cliente);
+	public ArrayList<Cliente> findByComercioId(Long comercioId);
 }

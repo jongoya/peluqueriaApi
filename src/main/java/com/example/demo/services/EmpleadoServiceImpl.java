@@ -37,4 +37,9 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 	public void deleteEmpleado(Long empleadoId) {
 		empleadoDao.deleteById(empleadoId);
 	}
+
+	@Override
+	public ArrayList<Empleado> findByComercioId(Long comercioId) {
+		return empleadoDao.findByComercioId(comercioId);
+	}
 }

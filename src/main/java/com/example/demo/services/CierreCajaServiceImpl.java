@@ -32,4 +32,9 @@ public class CierreCajaServiceImpl implements ICierreCajaService {
 	public CierreCaja saveCierreCaja(CierreCaja cierreCaja) {
 		return (CierreCaja) cierreCajaDao.save(cierreCaja);
 	}
+
+	@Override
+	public ArrayList<CierreCaja> findByComercioId(Long comercioId) {
+		return cierreCajaDao.findByComercioId(comercioId);
+	}
 }

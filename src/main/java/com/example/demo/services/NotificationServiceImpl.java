@@ -58,4 +58,9 @@ public class NotificationServiceImpl implements INotificationService {
 	public ArrayList<Notification> updateNotifications(ArrayList<Notification> notifications) {
 		return (ArrayList<Notification>) notificationDao.saveAll(notifications);
 	}
+
+	@Override
+	public ArrayList<Notification> findByComercioId(Long comercioId) {
+		return notificationDao.findByComercioId(comercioId);
+	}
 }

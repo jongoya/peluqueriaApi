@@ -61,4 +61,9 @@ public class ServicioServiceImpl implements IServicioService {
 	public ArrayList<Servicio> findByProfesional(Long profesional) {
 		return (ArrayList<Servicio>)servicioDao.findByEmpleadoId(profesional);
 	}
+
+	@Override
+	public ArrayList<Servicio> findByComercioId(Long comercioId) {
+		return servicioDao.findByComercioId(comercioId);
+	}
 }

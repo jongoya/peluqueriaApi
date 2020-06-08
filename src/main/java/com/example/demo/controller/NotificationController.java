@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.Commons.CommonFunctions;
 import com.example.demo.Commons.Constants;
 import com.example.demo.Models.Notification;
+import com.example.demo.security.JwtValidator;
 import com.example.demo.services.IDispositivoService;
+import com.example.demo.services.ILoginService;
 import com.example.demo.services.INotificationService;
 
 @RestController
@@ -30,28 +32,47 @@ public class NotificationController {
 	@Autowired
 	private IDispositivoService dispositivoService;
 	
-	@GetMapping("/get_notifications")
-	public ResponseEntity<ArrayList<Notification>> getNotifications(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+	@Autowired
+	private ILoginService loginService;
+	
+	@Autowired
+	private JwtValidator validator;
+	
+	@GetMapping("/get_notifications/{comercioId}")
+	public ResponseEntity<ArrayList<Notification>> getNotifications(@RequestHeader(Constants.authorizationHeaderKey) String token, @PathVariable(value = "comercioId")Long comercioId, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
 		
-		ArrayList<Notification> notifications = notificationService.findAll();
+		ArrayList<Notification> notifications = notificationService.findByComercioId(comercioId);
 		return new ResponseEntity<>(notifications, HttpStatus.OK);
 	}
 	
-	@GetMapping("/get_notifications_type/{type}")
-	public ResponseEntity<ArrayList<Notification>> getNotificationsByType(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @PathVariable(value = "type")String type) {
+	@GetMapping("/get_notifications_type/{comercioId}/{type}")
+	public ResponseEntity<ArrayList<Notification>> getNotificationsByType(@RequestHeader(Constants.authorizationHeaderKey) String token, @PathVariable(value = "comercioId")Long comercioId, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @PathVariable(value = "type")String type) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
 		
 		ArrayList<Notification> notifications = notificationService.findNotificationsByType(type);
+		notifications = CommonFunctions.filterNotificationsByComercioId(notifications, comercioId);
 		return new ResponseEntity<>(notifications, HttpStatus.OK);
 	}
 	
 	@PostMapping("/save_notifications")
-	public ResponseEntity<ArrayList<Notification>> saveNotifications(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<Notification> notifications) {
+	public ResponseEntity<ArrayList<Notification>> saveNotifications(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<Notification> notifications) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
@@ -61,7 +82,11 @@ public class NotificationController {
 	}
 	
 	@PostMapping("/save_notification")
-	public ResponseEntity<Notification> saveNotification(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Notification notification) {
+	public ResponseEntity<Notification> saveNotification(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Notification notification) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
@@ -71,7 +96,11 @@ public class NotificationController {
 	}
 	
 	@PutMapping("/update_notification")
-	public ResponseEntity<Notification> updateNotification(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Notification notification) {
+	public ResponseEntity<Notification> updateNotification(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Notification notification) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
@@ -85,7 +114,11 @@ public class NotificationController {
 	}
 	
 	@PutMapping("/update_notifications")
-	public ResponseEntity<ArrayList<Notification>> updateNotifications(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<Notification> notifications) {
+	public ResponseEntity<ArrayList<Notification>> updateNotifications(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<Notification> notifications) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
@@ -101,7 +134,11 @@ public class NotificationController {
 	}
 	
 	@PostMapping("/delete_notification")
-	public ResponseEntity<Notification> deleteNotification(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Notification notification) {
+	public ResponseEntity<Notification> deleteNotification(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Notification notification) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
@@ -115,7 +152,11 @@ public class NotificationController {
 	}
 	
 	@PostMapping("/delete_notifications")
-	public ResponseEntity<Notification> deleteNotifications(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<Notification> notifications) {
+	public ResponseEntity<Notification> deleteNotifications(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<Notification> notifications) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}

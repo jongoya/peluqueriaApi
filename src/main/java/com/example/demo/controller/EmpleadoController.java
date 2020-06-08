@@ -21,8 +21,10 @@ import com.example.demo.Models.ClienteMasServicios;
 import com.example.demo.Models.Empleado;
 import com.example.demo.Models.EmpleadoMasServicios;
 import com.example.demo.Models.Servicio;
+import com.example.demo.security.JwtValidator;
 import com.example.demo.services.IDispositivoService;
 import com.example.demo.services.IEmpleadoService;
+import com.example.demo.services.ILoginService;
 import com.example.demo.services.IServicioService;
 
 @RestController
@@ -38,18 +40,32 @@ public class EmpleadoController {
 	@Autowired
 	private IDispositivoService dispositivoService;
 	
-	@GetMapping("/get_empleados")
-	public ResponseEntity<ArrayList<Empleado>> getEmpleados(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+	@Autowired
+	private ILoginService loginService;
+	
+	@Autowired
+	private JwtValidator validator;
+	
+	@GetMapping("/get_empleados/{comercioId}")
+	public ResponseEntity<ArrayList<Empleado>> getEmpleados(@RequestHeader(Constants.authorizationHeaderKey) String token, @PathVariable(value = "comercioId")Long comercioId, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
 		
-		ArrayList<Empleado> empleados = empleadoService.findAll();
+		ArrayList<Empleado> empleados = empleadoService.findByComercioId(comercioId);
 		return new ResponseEntity<>(empleados, HttpStatus.OK);
 	}
 	
 	@PostMapping("/save_empleado")
-	public ResponseEntity<?> saveEmpleado(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
+	public ResponseEntity<?> saveEmpleado(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
@@ -59,7 +75,15 @@ public class EmpleadoController {
 	}
 	
 	@PutMapping("/update_empleado")
-	public ResponseEntity<?> updateEmpleado(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
+	public ResponseEntity<?> updateEmpleado(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
 		if (empleadoService.findByEmpleadoId(empleado.getEmpleadoId()) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
@@ -69,7 +93,11 @@ public class EmpleadoController {
 	}
 	
 	@GetMapping("get_empleado/{id}")
-	public ResponseEntity<?>getEmpleadoWithId(@PathVariable(value = "id")Long id, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+	public ResponseEntity<?>getEmpleadoWithId(@RequestHeader(Constants.authorizationHeaderKey) String token, @PathVariable(value = "id")Long id, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
@@ -83,7 +111,11 @@ public class EmpleadoController {
 	}
 	
 	@PostMapping("/delete_empleado")
-	public ResponseEntity<?> deleteEmpleado(@RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
+	public ResponseEntity<?> deleteEmpleado(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
 			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
 		}
@@ -92,13 +124,14 @@ public class EmpleadoController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
 			empleadoService.deleteEmpleado(empleado.getEmpleadoId());
-			ArrayList<Empleado> empleados = empleadoService.findAll();
+			ArrayList<Empleado> empleados = empleadoService.findByComercioId(empleado.getComercioId());
 
 			Empleado empleadoJefe = new Empleado();
 			ArrayList<Servicio> resultados = new ArrayList<>();
 			if (empleados.size() > 0) {
 				empleadoJefe = getEmpleadoJefe(empleados);
 				ArrayList<Servicio> servicios = servicioService.findByProfesional(empleado.getEmpleadoId());
+				servicios = CommonFunctions.filterServicesByComercioId(servicios, empleado.getComercioId());
 				for (Servicio servicio : servicios) {
 					servicio.setEmpleadoId(empleadoJefe.getEmpleadoId());
 				}
