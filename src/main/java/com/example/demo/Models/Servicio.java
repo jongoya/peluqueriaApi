@@ -23,6 +23,7 @@ public class Servicio implements Serializable {
     private String observacion;
     private double precio;
     private Long comercioId;
+    private boolean isEfectivo;
 
 	@Transient
 	private String unique_deviceId;
@@ -101,6 +102,14 @@ public class Servicio implements Serializable {
 
 	public void setUnique_deviceId(String unique_deviceId) {
 		this.unique_deviceId = unique_deviceId;
+	}
+
+	public boolean isEfectivo() {
+		return isEfectivo;
+	}
+
+	public void setEfectivo(boolean isEfectivo) {
+		this.isEfectivo = isEfectivo;
 	}
 
 	private static final long serialVersionUID = 1L;

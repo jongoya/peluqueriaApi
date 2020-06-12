@@ -139,7 +139,7 @@ public class EmpleadoController {
 				resultados = servicioService.saveServicios(servicios);
 			}
 
-			return new ResponseEntity<>(new EmpleadoMasServicios(empleadoJefe, resultados), HttpStatus.OK);
+			return new ResponseEntity<>(new EmpleadoMasServicios(empleado, resultados), HttpStatus.OK);
 		}
 	}
 	

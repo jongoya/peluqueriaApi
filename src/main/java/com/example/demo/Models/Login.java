@@ -23,6 +23,8 @@ public class Login implements Serializable {
 	private String token;
 	private int numero_dispositivos;
 	private boolean active;
+	private String androidBundleId;
+	private String iosBundleId;
 	
 	@Transient
 	private String nombre_dispositivo;
@@ -105,5 +107,20 @@ public class Login implements Serializable {
 	public void setUnique_deviceId(String unique_deviceId) {
 		this.unique_deviceId = unique_deviceId;
 	}
-	
+
+	public String getAndroidBundleId() {
+		return androidBundleId;
+	}
+
+	public void setAndroidBundleId(String androidBundleId) {
+		this.androidBundleId = androidBundleId;
+	}
+
+	public String getIosBundleId() {
+		return iosBundleId;
+	}
+
+	public void setIosBundleId(String iosBundleId) {
+		this.iosBundleId = iosBundleId;
+	}
 }

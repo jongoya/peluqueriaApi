@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Models.Dispositivo;
+import com.example.demo.Models.EstiloPublico;
 import com.example.demo.Models.JwtUser;
 import com.example.demo.Models.Login;
 import com.example.demo.Models.LoginMasDispositivos;
 import com.example.demo.security.JwtGenerator;
 import com.example.demo.services.IDispositivoService;
+import com.example.demo.services.IEstiloPublicoService;
 import com.example.demo.services.ILoginService;
 
 @RestController
@@ -30,6 +32,9 @@ public class LoginController {
 	
 	@Autowired IDispositivoService dispositivoService;
 	
+	@Autowired
+	private IEstiloPublicoService estiloPublico;
+	
 	public LoginController() {
 		this.jwtGenerator = new JwtGenerator();
 	}
@@ -41,6 +46,8 @@ public class LoginController {
 		} else {
 			login.setActive(false);
 			Login response = loginService.save(login);
+			EstiloPublico estilo = new EstiloPublico(login.getAndroidBundleId(),login.getIosBundleId(), login.getNombre());
+			estiloPublico.saveEstilo(estilo);
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		}
 	}
