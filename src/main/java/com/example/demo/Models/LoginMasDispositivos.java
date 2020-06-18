@@ -7,11 +7,13 @@ public class LoginMasDispositivos implements Serializable {
 
 	private Login login;
 	private ArrayList<Dispositivo> dispositivos;
+	private EstiloPrivado estiloPrivado;
 	
-	public LoginMasDispositivos(Login login, ArrayList<Dispositivo> dispositivos) {
+	public LoginMasDispositivos(Login login, ArrayList<Dispositivo> dispositivos, EstiloPrivado estiloPrivado) {
 		super();
 		this.login = login;
 		this.dispositivos = dispositivos;
+		this.estiloPrivado = estiloPrivado;
 	}
 
 	public Login getLogin() {
@@ -29,7 +31,12 @@ public class LoginMasDispositivos implements Serializable {
 	public void setDispositivos(ArrayList<Dispositivo> dispositivos) {
 		this.dispositivos = dispositivos;
 	}
-	
-	
-	
+
+	public EstiloPrivado getEstiloPrivado() {
+		return estiloPrivado;
+	}
+
+	public void setEstiloPrivado(EstiloPrivado estiloPrivado) {
+		this.estiloPrivado = estiloPrivado;
+	}
 }

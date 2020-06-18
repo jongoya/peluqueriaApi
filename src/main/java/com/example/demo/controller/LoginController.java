@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Models.Dispositivo;
+import com.example.demo.Models.EstiloPrivado;
 import com.example.demo.Models.EstiloPublico;
 import com.example.demo.Models.JwtUser;
 import com.example.demo.Models.Login;
 import com.example.demo.Models.LoginMasDispositivos;
 import com.example.demo.security.JwtGenerator;
 import com.example.demo.services.IDispositivoService;
+import com.example.demo.services.IEstiloPrivadoService;
 import com.example.demo.services.IEstiloPublicoService;
 import com.example.demo.services.ILoginService;
 
@@ -35,6 +37,9 @@ public class LoginController {
 	@Autowired
 	private IEstiloPublicoService estiloPublico;
 	
+	@Autowired
+	private IEstiloPrivadoService estiloPrivadoService;
+	
 	public LoginController() {
 		this.jwtGenerator = new JwtGenerator();
 	}
@@ -48,6 +53,9 @@ public class LoginController {
 			Login response = loginService.save(login);
 			EstiloPublico estilo = new EstiloPublico(login.getAndroidBundleId(),login.getIosBundleId(), login.getNombre());
 			estiloPublico.saveEstilo(estilo);
+			EstiloPrivado estiloPrivado = new EstiloPrivado(login.getComercioId());
+			estiloPrivadoService.saveEstilo(estiloPrivado);
+			
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		}
 	}
@@ -76,7 +84,9 @@ public class LoginController {
 			}
 		}
 		
-		LoginMasDispositivos result = new LoginMasDispositivos(comercioLogin, dispositivos);
+		EstiloPrivado estiloPrivado = estiloPrivadoService.findByComercioId(comercioLogin.getComercioId());
+		
+		LoginMasDispositivos result = new LoginMasDispositivos(comercioLogin, dispositivos, estiloPrivado);
 		
 		if (dispositivos.size() == comercioLogin.getNumero_dispositivos() && !dispositivoRegistrado) {
 			return new ResponseEntity<>(result, HttpStatus.valueOf(413));
@@ -123,7 +133,9 @@ public class LoginController {
 		dispositivoService.deleteDispositivo(dispositivoABorrar.getDispositivoId());
 		dispositivoService.save(new Dispositivo(comercioLogin.getComercioId(), new Date().getTime(), loginMasDispositivos.getLogin().getNombre_dispositivo(), loginMasDispositivos.getLogin().getUnique_deviceId()));
 
-		LoginMasDispositivos result = new LoginMasDispositivos(comercioLogin, dispositivos);
+		EstiloPrivado estiloPrivado = estiloPrivadoService.findByComercioId(comercioLogin.getComercioId());
+		
+		LoginMasDispositivos result = new LoginMasDispositivos(comercioLogin, dispositivos, estiloPrivado);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
