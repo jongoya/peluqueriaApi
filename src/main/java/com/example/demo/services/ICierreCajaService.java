@@ -6,7 +6,7 @@ import com.example.demo.Models.CierreCaja;
 
 public interface ICierreCajaService {
 	public ArrayList<CierreCaja> findAll();
-	public ArrayList<CierreCaja>  saveCierreCajas(ArrayList<CierreCaja> cierreCajas);
+	public ArrayList<CierreCaja> saveCierreCajas(ArrayList<CierreCaja> cierreCajas);
 	public CierreCaja saveCierreCaja(CierreCaja cierreCaja);
 	public ArrayList<CierreCaja> findByComercioId(Long comercioId);
 }

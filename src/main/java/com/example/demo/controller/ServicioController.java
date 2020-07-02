@@ -141,6 +141,21 @@ public class ServicioController {
 		}
 	}
 	
+	@GetMapping("/get_servicios_range/{comercioId}/{fechaInicio}/{fechaFin}")
+	public ResponseEntity<ArrayList<Servicio>> getServiciosByRange(@RequestHeader(Constants.authorizationHeaderKey) String token, @PathVariable(value = "comercioId")Long comercioId, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, 
+			@PathVariable(value = "fechaInicio")Long fechaInicio, @PathVariable(value = "fechaFin")Long fechaFin) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		ArrayList<Servicio> servicios = servicioService.findByRange(comercioId, fechaInicio, fechaFin);
+		return new ResponseEntity<>(servicios, HttpStatus.OK);
+	}
+	
 	@PutMapping("/update_servicio")
 	public ResponseEntity<?> updateServicio(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Servicio servicio) {
 		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {

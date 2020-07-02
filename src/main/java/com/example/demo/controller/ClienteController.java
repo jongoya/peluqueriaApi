@@ -88,6 +88,34 @@ public class ClienteController {
 		return new ResponseEntity<>(body, HttpStatus.OK);
 	}
 	
+	@PostMapping("/save_clientes")
+	public ResponseEntity<ArrayList<ClienteMasServicios>> saveClientes(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<ClienteMasServicios> body) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		for (ClienteMasServicios clienteMasServicios: body) {
+			Cliente cliente = clienteService.save(clienteMasServicios.getCliente());
+			
+			ArrayList<Servicio> servicios = clienteMasServicios.getServicios();
+			
+			for (Servicio servicio: servicios) {
+				servicio.setClientId(cliente.getId());
+			}
+			
+			ArrayList<Servicio> resultados = servicioService.saveServicios(servicios);
+			
+			clienteMasServicios.setCliente(cliente);
+			clienteMasServicios.setServicios(resultados);
+		}
+		
+		return new ResponseEntity<>(body, HttpStatus.OK);
+	}
+	
 	
 	@GetMapping("/get_cliente/{id}")
 	public ResponseEntity<?> getCliente(@RequestHeader(Constants.authorizationHeaderKey) String token, @PathVariable(value = "id")Long id, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {

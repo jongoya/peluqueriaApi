@@ -82,4 +82,18 @@ public class TipoServicioController {
 		TipoServicio resultado = tipoServicioService.saveTipoServicio(tipoServicio);
 		return new ResponseEntity<>(resultado, HttpStatus.CREATED);
 	}
+	
+	@PostMapping("/save_tipo_servicios")
+	public ResponseEntity<ArrayList<TipoServicio>> saveTipoServicios(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<TipoServicio> tipoServicios) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		ArrayList<TipoServicio> resultado = tipoServicioService.saveTipoServicios(tipoServicios);
+		return new ResponseEntity<>(resultado, HttpStatus.CREATED);
+	}
 }

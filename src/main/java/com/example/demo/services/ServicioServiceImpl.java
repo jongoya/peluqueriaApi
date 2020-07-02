@@ -66,4 +66,9 @@ public class ServicioServiceImpl implements IServicioService {
 	public ArrayList<Servicio> findByComercioId(Long comercioId) {
 		return servicioDao.findByComercioId(comercioId);
 	}
+
+	@Override
+	public ArrayList<Servicio> findByRange(Long comercioId, Long fechaInicio, Long fechaFin) {
+		return (ArrayList<Servicio>) servicioDao.findByComercioIdAndFecha(comercioId, fechaInicio, fechaFin);
+	}
 }

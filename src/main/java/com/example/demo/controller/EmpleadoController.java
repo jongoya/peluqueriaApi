@@ -74,6 +74,20 @@ public class EmpleadoController {
 		return new ResponseEntity<>(resultado, HttpStatus.CREATED);
 	}
 	
+	@PostMapping("/save_empleados")
+	public ResponseEntity<?> saveEmpleados(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ArrayList<Empleado> empleados) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		ArrayList<Empleado> resultado = empleadoService.saveEmpleados(empleados);
+		return new ResponseEntity<>(resultado, HttpStatus.CREATED);
+	}
+	
 	@PutMapping("/update_empleado")
 	public ResponseEntity<?> updateEmpleado(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Empleado empleado) {
 		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {

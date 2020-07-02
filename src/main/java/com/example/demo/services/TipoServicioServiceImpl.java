@@ -37,4 +37,9 @@ public class TipoServicioServiceImpl implements ITipoServicioService {
 	public ArrayList<TipoServicio> findByComercioId(Long comercioId) {
 		return tipoServicioDao.findByComercioId(comercioId);
 	}
+
+	@Override
+	public ArrayList<TipoServicio> saveTipoServicios(ArrayList<TipoServicio> tipoServicios) {
+		return (ArrayList<TipoServicio>) tipoServicioDao.saveAll(tipoServicios);
+	}
 }

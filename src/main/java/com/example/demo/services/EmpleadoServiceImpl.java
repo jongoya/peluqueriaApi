@@ -42,4 +42,9 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 	public ArrayList<Empleado> findByComercioId(Long comercioId) {
 		return empleadoDao.findByComercioId(comercioId);
 	}
+
+	@Override
+	public ArrayList<Empleado> saveEmpleados(ArrayList<Empleado> empleados) {
+		return (ArrayList<Empleado>)empleadoDao.saveAll(empleados);
+	}
 }

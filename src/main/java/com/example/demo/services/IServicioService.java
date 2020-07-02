@@ -14,4 +14,5 @@ public interface IServicioService {
 	public Servicio updateServicio(Servicio servicio);
 	public void deleteServicio(Long servicioId);
 	public ArrayList<Servicio> findByComercioId(Long comercioId);
+	public ArrayList<Servicio> findByRange(Long comercioId, Long fechaInicio, Long fechaFin);
 }
