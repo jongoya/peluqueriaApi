@@ -134,11 +134,7 @@ public class ServicioController {
 		
 		ArrayList<Servicio> servicios = servicioService.findByClienteId(id);
 		servicios = CommonFunctions.filterServicesByComercioId(servicios, comercioId);
-		if (servicios.size() == 0) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} else {
-			return new ResponseEntity<>(servicios, HttpStatus.OK);
-		}
+		return new ResponseEntity<>(servicios, HttpStatus.OK);
 	}
 	
 	@GetMapping("/get_servicios_range/{comercioId}/{fechaInicio}/{fechaFin}")
