@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,10 @@ public class LoginServiceImpl implements ILoginService {
 	@Override
 	public Login updateLogin(Login login) {
 		return loginDao.save(login);
+	}
+
+	@Override
+	public ArrayList<Login> findAllLogins() {
+		return (ArrayList<Login>) loginDao.findAll();
 	}
 }

@@ -25,6 +25,7 @@ public class Login implements Serializable {
 	private boolean active;
 	private String androidBundleId;
 	private String iosBundleId;
+	private boolean admin = false;
 	
 	@Transient
 	private String nombre_dispositivo;
@@ -122,5 +123,13 @@ public class Login implements Serializable {
 
 	public void setIosBundleId(String iosBundleId) {
 		this.iosBundleId = iosBundleId;
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 }
