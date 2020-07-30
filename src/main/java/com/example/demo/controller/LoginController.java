@@ -54,8 +54,18 @@ public class LoginController {
 		this.jwtGenerator = new JwtGenerator();
 	}
 
+	@CrossOrigin
 	@PostMapping("/register_comercio")
-	public ResponseEntity<Login> registerComercio(@RequestBody Login login) {
+	public ResponseEntity<Login> registerComercio(@RequestBody Login login, @RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		
 		if (loginService.findByComercioId(login.getComercioId()) != null) {
 			return new ResponseEntity<>(HttpStatus.FOUND);
 		} else {
