@@ -38,4 +38,9 @@ public class LoginServiceImpl implements ILoginService {
 	public ArrayList<Login> findAllLogins() {
 		return (ArrayList<Login>) loginDao.findAll();
 	}
+
+	@Override
+	public void deleteLogin(Login login) {
+		loginDao.delete(login);
+	}
 }

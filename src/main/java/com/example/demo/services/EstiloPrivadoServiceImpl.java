@@ -26,4 +26,9 @@ public class EstiloPrivadoServiceImpl implements IEstiloPrivadoService {
 	public EstiloPrivado findByComercioId(Long comercioId) {
 		return estiloPrivadoDao.findByComercioId(comercioId);
 	}
+
+	@Override
+	public void deleteEstilo(EstiloPrivado estiloPrivado) {
+		estiloPrivadoDao.delete(estiloPrivado);
+	}
 }

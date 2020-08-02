@@ -11,4 +11,6 @@ public interface IClienteService {
 	public Cliente findByClienteId(Long clienteId);
 	public Cliente updateCliente(Cliente cliente);
 	public ArrayList<Cliente> findByComercioId(Long comercioId);
+	public void deleteCliente(Cliente cliente);
+	public void deleteClientes(ArrayList<Cliente> clientes);
 }

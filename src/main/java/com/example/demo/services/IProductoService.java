@@ -12,4 +12,5 @@ public interface IProductoService {
 	public ProductoModel updateProducto(ProductoModel producto);
 	public void deleteProducto(Long productoId);
 	public ArrayList<ProductoModel> findByComercioId(Long comercioId);
+	public void deleteProductos(ArrayList<ProductoModel> productos);
 }

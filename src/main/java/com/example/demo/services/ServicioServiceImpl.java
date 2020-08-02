@@ -71,4 +71,9 @@ public class ServicioServiceImpl implements IServicioService {
 	public ArrayList<Servicio> findByRange(Long comercioId, Long fechaInicio, Long fechaFin) {
 		return (ArrayList<Servicio>) servicioDao.findByComercioIdAndFecha(comercioId, fechaInicio, fechaFin);
 	}
+
+	@Override
+	public void deleteServicios(ArrayList<Servicio> servicios) {
+		servicioDao.deleteAll(servicios);
+	}
 }

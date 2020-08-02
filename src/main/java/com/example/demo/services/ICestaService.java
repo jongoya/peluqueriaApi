@@ -11,5 +11,5 @@ public interface ICestaService {
 	public Cesta updateCesta(Cesta cesta);
 	public void deleteCesta(Long cestaId);
 	public ArrayList<Cesta> findByComercioId(Long comercioId);
-
+	public void deleteCestas(ArrayList<Cesta> cestas);
 }

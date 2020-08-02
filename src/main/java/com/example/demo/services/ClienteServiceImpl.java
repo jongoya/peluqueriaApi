@@ -42,4 +42,14 @@ public class ClienteServiceImpl implements IClienteService {
 	public ArrayList<Cliente> findByComercioId(Long comercioId) {
 		return clienteDao.findByComercioId(comercioId);
 	}
+
+	@Override
+	public void deleteCliente(Cliente cliente) {
+		clienteDao.delete(cliente);
+	}
+
+	@Override
+	public void deleteClientes(ArrayList<Cliente> clientes) {
+		clienteDao.deleteAll(clientes);
+	}
 }

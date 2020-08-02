@@ -12,4 +12,5 @@ public interface IEmpleadoService {
 	public Empleado updateEmpleado(Empleado empleado);
 	public void deleteEmpleado(Long empleadoId);
 	public ArrayList<Empleado> findByComercioId(Long comercioId);
+	public void deleteEmpleados(ArrayList<Empleado> empleados);
 }

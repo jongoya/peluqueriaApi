@@ -49,4 +49,9 @@ public class ProductoServiceImpl implements IProductoService {
 		return productoDao.findByComercioId(comercioId);
 	}
 
+	@Override
+	public void deleteProductos(ArrayList<ProductoModel> productos) {
+		productoDao.deleteAll(productos);
+	}
+
 }

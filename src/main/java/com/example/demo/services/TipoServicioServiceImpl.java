@@ -42,4 +42,9 @@ public class TipoServicioServiceImpl implements ITipoServicioService {
 	public ArrayList<TipoServicio> saveTipoServicios(ArrayList<TipoServicio> tipoServicios) {
 		return (ArrayList<TipoServicio>) tipoServicioDao.saveAll(tipoServicios);
 	}
+
+	@Override
+	public void deleteTipoServicios(ArrayList<TipoServicio> tipoServicios) {
+		tipoServicioDao.deleteAll(tipoServicios);
+	}
 }

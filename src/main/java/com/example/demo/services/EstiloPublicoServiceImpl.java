@@ -31,4 +31,14 @@ public class EstiloPublicoServiceImpl implements IEstiloPublicoService {
 	public EstiloPublico findByEstiloId(Long estiloId) {
 		return estiloPublicoDao.findByEstiloId(estiloId).orElse(null);
 	}
+
+	@Override
+	public EstiloPublico findByNombreApp(String nombreApp) {
+		return estiloPublicoDao.findByNombreApp(nombreApp).orElse(null);
+	}
+
+	@Override
+	public void deleteEstilo(EstiloPublico estiloPublico) {
+		estiloPublicoDao.delete(estiloPublico);
+	}
 }

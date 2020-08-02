@@ -38,4 +38,9 @@ public class DispositivoServiceImpl implements IDispositivoService {
 	public Dispositivo findByUniqueDeviceId(String uniqueDeviceId) {
 		return dispositivoDao.findByUniqueDeviceId(uniqueDeviceId).orElse(null);
 	}
+
+	@Override
+	public void deleteDispositivos(ArrayList<Dispositivo> dispositivos) {
+		dispositivoDao.deleteAll(dispositivos);
+	}
 }

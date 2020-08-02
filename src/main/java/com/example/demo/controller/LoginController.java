@@ -17,18 +17,37 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Commons.CommonFunctions;
 import com.example.demo.Commons.Constants;
+import com.example.demo.Models.Cesta;
+import com.example.demo.Models.CierreCaja;
+import com.example.demo.Models.Cliente;
+import com.example.demo.Models.ComercioModel;
 import com.example.demo.Models.Dispositivo;
+import com.example.demo.Models.Empleado;
 import com.example.demo.Models.EstiloPrivado;
 import com.example.demo.Models.EstiloPublico;
 import com.example.demo.Models.JwtUser;
 import com.example.demo.Models.Login;
 import com.example.demo.Models.LoginMasDispositivos;
+import com.example.demo.Models.Notification;
+import com.example.demo.Models.ProductoModel;
+import com.example.demo.Models.Servicio;
+import com.example.demo.Models.TipoServicio;
+import com.example.demo.Models.Venta;
 import com.example.demo.security.JwtGenerator;
 import com.example.demo.security.JwtValidator;
+import com.example.demo.services.ICestaService;
+import com.example.demo.services.ICierreCajaService;
+import com.example.demo.services.IClienteService;
 import com.example.demo.services.IDispositivoService;
+import com.example.demo.services.IEmpleadoService;
 import com.example.demo.services.IEstiloPrivadoService;
 import com.example.demo.services.IEstiloPublicoService;
 import com.example.demo.services.ILoginService;
+import com.example.demo.services.INotificationService;
+import com.example.demo.services.IProductoService;
+import com.example.demo.services.IServicioService;
+import com.example.demo.services.ITipoServicioService;
+import com.example.demo.services.IVentaService;
 
 @RestController
 @RequestMapping("/api")
@@ -46,6 +65,33 @@ public class LoginController {
 	
 	@Autowired
 	private IEstiloPrivadoService estiloPrivadoService;
+	
+	@Autowired
+	private ICestaService cestaService;
+	
+	@Autowired
+	private ICierreCajaService cierreCajaService;
+	
+	@Autowired
+	private IClienteService clienteService;
+	
+	@Autowired
+	private IEmpleadoService empleadoService;
+	
+	@Autowired
+	private INotificationService notificationService;
+	
+	@Autowired
+	private IProductoService productoService;
+	
+	@Autowired
+	private IServicioService servicioService;
+	
+	@Autowired
+	private ITipoServicioService tipoServicioService;
+	
+	@Autowired
+	private IVentaService ventaService;
 	
 	@Autowired
 	private JwtValidator validator;
@@ -228,6 +274,78 @@ public class LoginController {
 		}
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@PostMapping("comercio_details")
+	public ResponseEntity<ComercioModel> getComercioById(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Login login) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		Login serverLogin = loginService.findByComercioId(login.getComercioId());
+		
+		if (serverLogin == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		ArrayList<Dispositivo> dispositivos = dispositivoService.findByComercioId(login.getComercioId());
+		EstiloPrivado estiloPrivado = estiloPrivadoService.findByComercioId(login.getComercioId());
+		EstiloPublico estilo = estiloPublico.findByAndroidBundleId(login.getAndroidBundleId());
+		
+		ComercioModel comercio = new ComercioModel(serverLogin, dispositivos, estiloPrivado, estilo);
+		
+		return new ResponseEntity<>(comercio, HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@PostMapping("delete_comercio")
+	public ResponseEntity<?> deleteComercio(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Login login) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		Login serverLogin = loginService.findByComercioId(login.getComercioId());
+		if (serverLogin == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		loginService.deleteLogin(serverLogin);
+		ArrayList<Cesta> cestas = cestaService.findByComercioId(login.getComercioId());
+		ArrayList<CierreCaja> cierreCajas = cierreCajaService.findByComercioId(login.getComercioId());
+		ArrayList<Cliente> clientes = clienteService.findByComercioId(login.getComercioId());
+		ArrayList<Dispositivo> dispositivos = dispositivoService.findByComercioId(login.getComercioId());
+		ArrayList<Empleado> empleados = empleadoService.findByComercioId(login.getComercioId());
+		EstiloPrivado estiloPrivado = estiloPrivadoService.findByComercioId(login.getComercioId());
+		EstiloPublico estiloPublicoObject = estiloPublico.findByNombreApp(login.getNombre());
+		ArrayList<Notification> notifications = notificationService.findByComercioId(login.getComercioId());
+		ArrayList<ProductoModel> productos = productoService.findByComercioId(login.getComercioId());
+		ArrayList<TipoServicio> tipoServicios = tipoServicioService.findByComercioId(login.getComercioId());
+		ArrayList<Servicio> servicios = servicioService.findByComercioId(login.getComercioId());
+		ArrayList<Venta> ventas = ventaService.findByComercioId(login.getComercioId());
+		
+		cestaService.deleteCestas(cestas);
+		cierreCajaService.deleteCierreCajas(cierreCajas);
+		clienteService.deleteClientes(clientes);
+		dispositivoService.deleteDispositivos(dispositivos);
+		empleadoService.deleteEmpleados(empleados);
+		estiloPrivadoService.deleteEstilo(estiloPrivado);
+		estiloPublico.deleteEstilo(estiloPublicoObject);
+		notificationService.deleteNotifications(notifications);
+		productoService.deleteProductos(productos);
+		tipoServicioService.deleteTipoServicios(tipoServicios);
+		servicioService.deleteServicios(servicios);
+		ventaService.deleteVentas(ventas);
+		
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	private String generarToken(Login login) {

@@ -37,4 +37,14 @@ public class CierreCajaServiceImpl implements ICierreCajaService {
 	public ArrayList<CierreCaja> findByComercioId(Long comercioId) {
 		return cierreCajaDao.findByComercioId(comercioId);
 	}
+
+	@Override
+	public void deleteCierreCaja(CierreCaja cierreCaja) {
+		cierreCajaDao.delete(cierreCaja);
+	}
+
+	@Override
+	public void deleteCierreCajas(ArrayList<CierreCaja> cierreCajas) {
+		cierreCajaDao.deleteAll(cierreCajas);
+	}
 }

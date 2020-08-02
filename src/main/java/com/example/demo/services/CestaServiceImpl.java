@@ -42,4 +42,9 @@ public class CestaServiceImpl implements ICestaService {
 	public ArrayList<Cesta> findByComercioId(Long comercioId) {
 		return cestaDao.findByComercioId(comercioId);
 	}
+
+	@Override
+	public void deleteCestas(ArrayList<Cesta> cestas) {
+		cestaDao.deleteAll(cestas);
+	}
 }

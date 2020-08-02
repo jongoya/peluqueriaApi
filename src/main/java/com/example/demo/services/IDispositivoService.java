@@ -11,4 +11,5 @@ public interface IDispositivoService {
 	public ArrayList<Dispositivo> findByComercioId(Long comercioId);
 	public void deleteDispositivo(Long dispositivoId);
 	public Dispositivo findByUniqueDeviceId(String uniqueDeviceId);
+	public void deleteDispositivos(ArrayList<Dispositivo> dispositivos);
 }

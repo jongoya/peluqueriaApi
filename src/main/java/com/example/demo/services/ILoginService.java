@@ -10,4 +10,5 @@ public interface ILoginService {
 	public Login findByUsuario(String usuario);
 	public Login updateLogin(Login login);
 	public ArrayList<Login> findAllLogins();
+	public void deleteLogin (Login login);
 }

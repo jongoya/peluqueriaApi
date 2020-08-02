@@ -47,4 +47,9 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 	public ArrayList<Empleado> saveEmpleados(ArrayList<Empleado> empleados) {
 		return (ArrayList<Empleado>)empleadoDao.saveAll(empleados);
 	}
+
+	@Override
+	public void deleteEmpleados(ArrayList<Empleado> empleados) {
+		empleadoDao.deleteAll(empleados);
+	}
 }
