@@ -10,4 +10,5 @@ public interface IEstiloPublicoService {
 	public EstiloPublico findByEstiloId(Long estiloId);
 	public EstiloPublico findByNombreApp(String nombreApp);
 	public void deleteEstilo(EstiloPublico estiloPublico);
+	public EstiloPublico updateEstilo(EstiloPublico estilo);
 }

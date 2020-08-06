@@ -41,4 +41,9 @@ public class EstiloPublicoServiceImpl implements IEstiloPublicoService {
 	public void deleteEstilo(EstiloPublico estiloPublico) {
 		estiloPublicoDao.delete(estiloPublico);
 	}
+
+	@Override
+	public EstiloPublico updateEstilo(EstiloPublico estilo) {
+		return estiloPublicoDao.save(estilo);
+	}
 }

@@ -31,4 +31,9 @@ public class EstiloPrivadoServiceImpl implements IEstiloPrivadoService {
 	public void deleteEstilo(EstiloPrivado estiloPrivado) {
 		estiloPrivadoDao.delete(estiloPrivado);
 	}
+
+	@Override
+	public EstiloPrivado updateEstilo(EstiloPrivado estiloPrivado) {
+		return estiloPrivadoDao.save(estiloPrivado);
+	}
 }

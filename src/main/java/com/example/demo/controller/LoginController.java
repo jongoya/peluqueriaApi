@@ -295,7 +295,7 @@ public class LoginController {
 		
 		ArrayList<Dispositivo> dispositivos = dispositivoService.findByComercioId(login.getComercioId());
 		EstiloPrivado estiloPrivado = estiloPrivadoService.findByComercioId(login.getComercioId());
-		EstiloPublico estilo = estiloPublico.findByAndroidBundleId(login.getAndroidBundleId());
+		EstiloPublico estilo = estiloPublico.findByNombreApp(login.getNombre());
 		
 		ComercioModel comercio = new ComercioModel(serverLogin, dispositivos, estiloPrivado, estilo);
 		
@@ -346,6 +346,70 @@ public class LoginController {
 		ventaService.deleteVentas(ventas);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@PostMapping("update_login")
+	public ResponseEntity<Login> udpdateComercio(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Login login) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		Login serverLogin = loginService.findByComercioId(login.getComercioId());
+		
+		if (serverLogin == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		ArrayList<Dispositivo> dispositivos = dispositivoService.findByComercioId(login.getComercioId());
+		EstiloPrivado estiloPrivado = estiloPrivadoService.findByComercioId(login.getComercioId());
+		EstiloPublico estiloPublicoObject = estiloPublico.findByNombreApp(serverLogin.getNombre());
+		
+		serverLogin.setNombre(login.getNombre());
+		estiloPublicoObject.setNombreApp(login.getNombre());
+		
+		serverLogin.setUsuario(login.getUsuario());
+		
+		serverLogin.setPassword(login.getPassword());
+		
+		if (login.getNumero_dispositivos() < dispositivos.size()) {
+			for (int i = 0; i < dispositivos.size(); i++) {
+				if (i >= login.getNumero_dispositivos()) {
+					dispositivoService.deleteDispositivo(dispositivos.get(i).getDispositivoId());
+				}
+			}
+		}
+		
+		serverLogin.setNumero_dispositivos(login.getNumero_dispositivos());
+		
+		serverLogin.setAndroidBundleId(login.getAndroidBundleId());
+		estiloPublicoObject.setAndroidBundleId(login.getAndroidBundleId());
+		
+		serverLogin.setIosBundleId(login.getIosBundleId());
+		estiloPublicoObject.setIosBundleId(login.getIosBundleId());
+		
+		if (serverLogin.isActive() && !login.isActive()) {
+			serverLogin.setActive(false);
+			serverLogin.setToken("");
+			dispositivoService.deleteDispositivos(dispositivos);
+		}
+		
+		if (!serverLogin.isActive() && login.isActive()) {
+			serverLogin.setActive(true);
+			serverLogin.setToken(generarToken(serverLogin));
+		}
+		
+		serverLogin.setAdmin(login.isAdmin());
+		
+		serverLogin = loginService.updateLogin(serverLogin);
+		estiloPrivadoService.updateEstilo(estiloPrivado);
+		estiloPublico.updateEstilo(estiloPublicoObject);
+		
+		return new ResponseEntity<>(serverLogin, HttpStatus.OK);
 	}
 	
 	private String generarToken(Login login) {
