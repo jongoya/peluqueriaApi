@@ -156,6 +156,30 @@ public class ClienteController {
 		}
 	}
 	
+	@PutMapping("/update_cliente_servicios")
+	public ResponseEntity<?> updateClienteMasServicios(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody ClienteMasServicios body) {
+		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (!CommonFunctions.hasAuthorization(dispositivoService, uniqueDeviceId)) {
+			return new ResponseEntity<>(HttpStatus.valueOf(Constants.uniqueDeviceErrorValue));
+		}
+		
+		if (clienteService.findByClienteId(body.getCliente().getId()) == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			Cliente resultado = clienteService.updateCliente(body.getCliente());
+			for (Servicio servicio : body.getServicios()) {
+				servicioService.updateServicio(servicio);
+			}
+			
+			ArrayList<Servicio> servicios = servicioService.findByClienteId(body.getCliente().getId());
+			
+			return new ResponseEntity<>(new ClienteMasServicios(resultado, servicios), HttpStatus.OK);
+		}
+	}
+	
 	@PutMapping("update_notificacion_personalizada")
 	public ResponseEntity<?> updateNotificacionPersonalizada(@RequestHeader(Constants.authorizationHeaderKey) String token, @RequestHeader(Constants.uniqueDeviceIdHeaderKey) String uniqueDeviceId, @RequestBody Cliente cliente) {
 		if (!CommonFunctions.hasTokenAuthorization(token, validator,  loginService)) {
